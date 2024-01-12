@@ -43,6 +43,7 @@ vektorx = 0
 vektory = 0
 left = False
 right = False
+pocet_hracov = 0
 while True:
  
 # Otvor okno s nadpisom "Panda simulator"
@@ -100,12 +101,12 @@ while True:
     # Pokračuj na ďalšiu snímku (a všetko opať prekresli)
     senddata = my_username + "," + str(myentity[0]) + "," + str(myentity[1])
     redvicedata = receiveddata
-    for i in range(math.floor(len(redvicedata)/5)):
-        if hitboxes.getID(redvicedata[i * 5]) == -1 :
-            hitboxes.create(int(redvicedata[i * 5 + 1]),int(redvicedata[i * 5 + 2]),50,50)
+    for i in range(math.floor(len(redvicedata)/3)):
+        if hitboxes.getID(redvicedata[i * 3]) == -1 :
+            hitboxes.create(int(redvicedata[i * 3 + 1]),int(redvicedata[i * 3 + 2]),50,50,"#" + str(pocet_hracov))
         #hitboxes.colision(hitboxes.getID(), entityID)
-        hitboxes.pos(hitboxes.getID(redvicedata[i*5]), int(redvicedata[i * 5 + 1]),int(redvicedata[i * 5 + 2]))
-        showhitbox(hitboxes.getID(redvicedata[i*5]))
+        hitboxes.pos(hitboxes.getID(redvicedata[i*3]), int(redvicedata[i * 3 + 1]),int(redvicedata[i * 3 + 2]))
+        showhitbox(hitboxes.getID(redvicedata[i*3]))
 
     next_frame()
 
@@ -120,7 +121,7 @@ while True:
         # Encode message to bytes, prepare header and convert to bytes, like for username above, then send
         message = message.encode('utf-8')
         message_header = f"{len(message):<{HEADER_LENGTH}}".encode('utf-8')
-        client_socket.send(message_header + message)
+        client_socket.send(message)
 
     try:
         # Now we want to loop over received messages (there might be more than one) and print them
