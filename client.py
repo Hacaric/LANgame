@@ -6,10 +6,10 @@ import sys
 
 HEADER_LENGTH = 10
 
-IP = "127.0.0.1"
+IP = "10.4.5.230"
 PORT = 1234
-my_username = input("Username: ")
-#my_username = "Hacaric"
+#my_username = input("Username: ")
+my_username = "Hacaric"
 open_window('Panda simulator', 800, 600)
  
 # Začni vykreslovať snímky v cykle (v predvolenej rýchlosti 60fps)
