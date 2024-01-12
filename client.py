@@ -2,12 +2,17 @@ import socket
 import select
 import errno
 import sys
+from easygame import *
 
 HEADER_LENGTH = 10
 
 IP = "127.0.0.1"
 PORT = 1234
 my_username = input("Username: ")
+open_window('Panda simulator', 800, 600)
+ 
+# Začni vykreslovať snímky v cykle (v predvolenej rýchlosti 60fps)
+should_quit = False
 
 # Create a socket
 # socket.AF_INET - address family, IPv4, some otehr possible are AF_INET6, AF_BLUETOOTH, AF_UNIX
@@ -27,12 +32,25 @@ username_header = f"{len(username):<{HEADER_LENGTH}}".encode('utf-8')
 client_socket.send(username_header + username)
 senddata = []
 while True:
-
+ 
+# Otvor okno s nadpisom "Panda simulator"
+# vo veľkosti 800px na šírku a 600px na výš
     # Wait for user to input a message
     message = senddata
-
+    
+    for event in poll_events():
+        # Napríklad ak hráč spustí CloseEvent
+        # prestaň ďalej vykreslovať snímky a zatvor okno 
+        if type(event) is CloseEvent:
+            should_quit = True
+    ###
+    # Tu patrí logika hry, ktorá na obrazovku niečo vykreslí
+    ###
+ 
+    # Pokračuj na ďalšiu snímku (a všetko opať prekresli)
+    next_frame()
     # If message is not empty - send it
-    if message:
+    if message != []:
         senddata = []
         # Encode message to bytes, prepare header and convert to bytes, like for username above, then send
         message = message.encode('utf-8')
