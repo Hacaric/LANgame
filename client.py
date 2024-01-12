@@ -1,4 +1,4 @@
-from easygame2 import *
+from easygame import *
 import socket
 import select
 import errno
