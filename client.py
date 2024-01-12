@@ -104,6 +104,7 @@ while True:
         if hitboxes.getID(redvicedata[i * 5]) == -1 :
             hitboxes.create(int(redvicedata[i * 5 + 1]),int(redvicedata[i * 5 + 2]),int(redvicedata[i * 5 + 3]),int(redvicedata[i * 5 + 4]), redvicedata[i*5])
         #hitboxes.colision(hitboxes.getID(), entityID)
+        hitboxes.pos(hitboxes.getID(redvicedata[i*5]), int(redvicedata[i * 5 + 1]),int(redvicedata[i * 5 + 2]))
         showhitbox(hitboxes.getID(redvicedata[i*5]))
 
     next_frame()
