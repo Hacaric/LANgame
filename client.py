@@ -98,11 +98,11 @@ while True:
     showhitbox(0)
     draw_text("X: " + str(myentity[0]) + ", Y: " + str(myentity[1]), "Times New Roman", 32, position=(20,500), color=(0,0,0,1))
     # Pokračuj na ďalšiu snímku (a všetko opať prekresli)
-    senddata = my_username + "," + str(myentity[0]) + "," + str(myentity[1]) + "," + str(myentity[2]) + "," + str(myentity[3])
+    senddata = my_username + "," + str(myentity[0]) + "," + str(myentity[1])
     redvicedata = receiveddata
     for i in range(math.floor(len(redvicedata)/5)):
         if hitboxes.getID(redvicedata[i * 5]) == -1 :
-            hitboxes.create(int(redvicedata[i * 5 + 1]),int(redvicedata[i * 5 + 2]),int(redvicedata[i * 5 + 3]),int(redvicedata[i * 5 + 4]), redvicedata[i*5])
+            hitboxes.create(int(redvicedata[i * 5 + 1]),int(redvicedata[i * 5 + 2]),50,50)
         #hitboxes.colision(hitboxes.getID(), entityID)
         hitboxes.pos(hitboxes.getID(redvicedata[i*5]), int(redvicedata[i * 5 + 1]),int(redvicedata[i * 5 + 2]))
         showhitbox(hitboxes.getID(redvicedata[i*5]))
