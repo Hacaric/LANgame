@@ -1,4 +1,4 @@
-from easygame import *
+from easygame2 import *
 import socket
 import select
 import errno
@@ -9,7 +9,7 @@ HEADER_LENGTH = 10
 IP = "10.4.5.230"
 PORT = 1234
 #my_username = input("Username: ")
-my_username = "Hacaric"
+my_username = "Will"
 open_window('Panda simulator', 800, 600)
  
 # Začni vykreslovať snímky v cykle (v predvolenej rýchlosti 60fps)
@@ -43,7 +43,6 @@ vektorx = 0
 vektory = 0
 left = False
 right = False
-pocet_hracov = 0
 while True:
  
 # Otvor okno s nadpisom "Panda simulator"
@@ -99,19 +98,14 @@ while True:
     showhitbox(0)
     draw_text("X: " + str(myentity[0]) + ", Y: " + str(myentity[1]), "Times New Roman", 32, position=(20,500), color=(0,0,0,1))
     # Pokračuj na ďalšiu snímku (a všetko opať prekresli)
-
-
-
-
-
-    senddata = str(myentity[0]) + "," + str(myentity[1])
+    senddata = my_username + "," + str(myentity[0]) + "," + str(myentity[1])
     redvicedata = receiveddata
     for i in range(math.floor(len(redvicedata)/3)):
-        if i > pocet_hracov:
-            hitboxes.create(int(redvicedata[i * 3 + 1]),int(redvicedata[i * 3 + 2]),50,50,"#" + str(pocet_hracov))
+        if hitboxes.getID(redvicedata[i * 3]) == -1 :
+            hitboxes.create(int(redvicedata[i * 3 + 1]),int(redvicedata[i * 3 + 2]),50,50,redvicedata[i*3])
         #hitboxes.colision(hitboxes.getID(), entityID)
-        hitboxes.pos(hitboxes.getID("#" + str(i)), int(redvicedata[i * 3 + 1]),int(redvicedata[i * 3 + 2]))
-        showhitbox(hitboxes.getID("#" + str(i)))
+        hitboxes.pos(hitboxes.getID(redvicedata[i*3]), int(redvicedata[i * 3 + 1]),int(redvicedata[i * 3 + 2]))
+        showhitbox(hitboxes.getID(redvicedata[i*3]))
 
     next_frame()
 
@@ -126,7 +120,7 @@ while True:
         # Encode message to bytes, prepare header and convert to bytes, like for username above, then send
         message = message.encode('utf-8')
         message_header = f"{len(message):<{HEADER_LENGTH}}".encode('utf-8')
-        client_socket.send(message)
+        client_socket.send(message_header + message)
 
     try:
         # Now we want to loop over received messages (there might be more than one) and print them
