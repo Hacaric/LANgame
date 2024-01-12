@@ -807,8 +807,13 @@ class hitboxes:
     hitbox = []
     def getID(name):
         idx = 0
-        while hitbox[4] != name or idx >= len(hitbox):
+        print(name)
+        print(hitbox)
+        while hitbox[idx][4] != name and idx < len(hitbox)-1:
             idx+=1
+            print(idx)
+        if idx >= len(hitbox)-1:
+            return -1
         return idx
     def get(id):
         try:

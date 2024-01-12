@@ -8,8 +8,8 @@ HEADER_LENGTH = 10
 
 IP = "127.0.0.1"
 PORT = 1234
-#my_username = input("Username: ")
-my_username = "Hacaric"
+my_username = input("Username: ")
+#my_username = "Hacaric"
 open_window('Panda simulator', 800, 600)
  
 # Začni vykreslovať snímky v cykle (v predvolenej rýchlosti 60fps)
@@ -98,8 +98,13 @@ while True:
     showhitbox(0)
     draw_text("X: " + str(myentity[0]) + ", Y: " + str(myentity[1]), "Times New Roman", 32, position=(20,500), color=(0,0,0,1))
     # Pokračuj na ďalšiu snímku (a všetko opať prekresli)
-    senddata = str(myentity[0]) + "," + str(myentity[1])
-    
+    senddata = my_username + "," + str(myentity[0]) + "," + str(myentity[1]) + "," + str(myentity[2]) + "," + str(myentity[3])
+    redvicedata = receiveddata
+    for i in range(math.floor(len(redvicedata)/5)):
+        if hitboxes.getID(redvicedata[i * 5]) == -1 :
+            hitboxes.create(int(redvicedata[i * 5 + 1]),int(redvicedata[i * 5 + 2]),int(redvicedata[i * 5 + 3]),int(redvicedata[i * 5 + 4]), redvicedata[i*5])
+        #hitboxes.colision(hitboxes.getID(), entityID)
+        showhitbox(hitboxes.getID(redvicedata[i*5]))
 
     next_frame()
 
