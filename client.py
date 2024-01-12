@@ -1,8 +1,8 @@
+from easygame import *
 import socket
 import select
 import errno
 import sys
-from easygame import *
 
 HEADER_LENGTH = 10
 
@@ -10,6 +10,9 @@ IP = "127.0.0.1"
 PORT = 1234
 my_username = input("Username: ")
 open_window('Panda simulator', 800, 600)
+pos1 = [0,0]
+pos2 = [0,50]
+pos3 = [50,0]
  
 # Začni vykreslovať snímky v cykle (v predvolenej rýchlosti 60fps)
 should_quit = False
@@ -30,28 +33,39 @@ client_socket.setblocking(False)
 username = my_username.encode('utf-8')
 username_header = f"{len(username):<{HEADER_LENGTH}}".encode('utf-8')
 client_socket.send(username_header + username)
-senddata = []
+senddata = ""
+receiveddata = []
 while True:
  
 # Otvor okno s nadpisom "Panda simulator"
 # vo veľkosti 800px na šírku a 600px na výš
     # Wait for user to input a message
     message = senddata
-    
     for event in poll_events():
         # Napríklad ak hráč spustí CloseEvent
         # prestaň ďalej vykreslovať snímky a zatvor okno 
         if type(event) is CloseEvent:
-            should_quit = True
+            close_window()
+            sys.exit()
+    
     ###
     # Tu patrí logika hry, ktorá na obrazovku niečo vykreslí
     ###
- 
+    fill(0,0,50)
+
+    draw_polygon(pos1, pos2, pos3)
+    senddata = str(str(pos1) + "," + str(pos2) + "," + str(pos3))
     # Pokračuj na ďalšiu snímku (a všetko opať prekresli)
     next_frame()
+
+
+
+
+
+
     # If message is not empty - send it
-    if message != []:
-        senddata = []
+    if message != "":
+        senddata = ""
         # Encode message to bytes, prepare header and convert to bytes, like for username above, then send
         message = message.encode('utf-8')
         message_header = f"{len(message):<{HEADER_LENGTH}}".encode('utf-8')
@@ -67,6 +81,7 @@ while True:
             # If we received no data, server gracefully closed a connection, for example using socket.close() or socket.shutdown(socket.SHUT_RDWR)
             if not len(username_header):
                 print('Connection closed by the server')
+                close_window()
                 sys.exit()
 
             # Convert header to int value
@@ -81,6 +96,7 @@ while True:
             message = client_socket.recv(message_length).decode('utf-8')
 
             # Print message
+            receiveddata = message.split(",")
             print(f'{username} > {message}')
 
     except IOError as e:
@@ -90,6 +106,7 @@ while True:
         # If we got different error code - something happened
         if e.errno != errno.EAGAIN and e.errno != errno.EWOULDBLOCK:
             print('Reading error: {}'.format(str(e)))
+            close_window()
             sys.exit()
 
         # We just did not receive anything
@@ -98,4 +115,5 @@ while True:
     except Exception as e:
         # Any other exception - something happened, exit
         print('Reading error: '.format(str(e)))
+        close_window()
         sys.exit()
