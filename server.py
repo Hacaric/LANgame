@@ -124,11 +124,12 @@ while True:
             for client_socket in clients:
 
                 # But don't sent it to sender
-                if client_socket != notified_socket:
+                posielat_sam_sebe = False
+                if client_socket != notified_socket or posielat_sam_sebe:
 
                     # Send user and message (both with their headers)
-                    # We are reusing here message header sent by sender, and saved username header send by user when he connected
-                    client_socket.send(user['header'] + user['data'] + message['header'] + message['data'])
+                    # We are reusing here message header sent by sender, and saved username header send by user when he connecte
+                    client_socket.send(user['header'] + user['data'] + message['header'] + message["data"])
 
     # It's not really necessary to have this, but will handle some socket exceptions just in case
     for notified_socket in exception_sockets:

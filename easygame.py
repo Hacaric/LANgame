@@ -1,3 +1,4 @@
+import math
 def degrees(d):
     """Convert degrees to radians.
 
@@ -801,3 +802,108 @@ def fix_rectangle_overlap(rect1, rect2):
         return (-move_x, 0)
     else:
         return (0, -move_y)
+class hitboxes:
+    global hitbox
+    hitbox = []
+    def getID(name):
+        idx = 0
+        while hitbox[4] != name or idx >= len(hitbox):
+            idx+=1
+        return idx
+    def get(id):
+        try:
+            return hitbox[id]
+        except Exception as e:
+            print("[Log Error]: " + str(e))
+    def create(x,y,width,height,name):
+        try:
+            hitbox.append([x,y,width,height,name])
+        except Exception as e:
+            print("[Log Error]: " + str(e))
+    def delete(id):
+        try:
+            hitbox.pop(id)
+        except Exception as e:
+            print("[Log Error]: " + str(e))
+    def colision(id, id2):
+        if id >= len(hitbox) or id2 >= len(hitbox):
+            print("[Log Error]: list index is out of range. Position: hitbox.colision. Info: " + str(id) + ", " + str(id2))
+            return False
+        x1 = hitbox[id][0]
+        y1 = hitbox[id][1]
+        w1 = hitbox[id][2] #w1 -> width1
+        h1 = hitbox[id][3] #h1 -> height1
+        x2 = hitbox[id2][0]
+        y2 = hitbox[id2][1]
+        w2 = hitbox[id2][2]
+        h2 = hitbox[id2][3]
+        x1, w1 = min(x1, x1 + w1), max(x1, x1 + w1)
+        y1, h1 = min(y1, y1 + h1), max(y1, y1 + h1)
+        x2, w2 = min(x2, x2 + w2), max(x2, x2 + w2)
+        y2, h2 = min(y2, y2 + h2), max(y2, y2 + h2)
+        return ((w1 > x2 and x1 < x2) or (x1 < w2 and w1 > w2)) or ((h1 > y2 and y1 < y2) or (y1 < h2 and h1 > h2))
+    def pos(id, x, y):
+        try:
+            hitbox[id][0] = x
+            hitbox[id][1] = y    
+        except Exception as e:
+            print("[Log Error]: " + str(e))
+    def move(id, newx, newy):
+        try:
+            hitbox[id][0] += newx
+            hitbox[id][1] += newy    
+        except Exception as e:
+            print("[Log Error]: " + str(e))
+    def size(id, neww, newh):
+        try:
+            hitbox[id][2] = neww
+            hitbox[id][3] = newh
+        except Exception as e:
+            print("[Log Error]: " + str(e))
+def countposonscreen(point, cameraX, cameraY, cameraZ, rotx, roty, FOV = 3):
+    if type(point[0]) == list:
+        for i in point:
+            countposonscreen(i)
+    else:
+        x = point[0] - abs(cameraX)
+        y = point[1] - abs(cameraY)
+        z = point[2] - abs(cameraZ)
+        #print(x/math.sqrt((x*x)+(z*z))+roty)
+        outX = (math.acos(x/math.sqrt((x*x)+(z*z)))*(int(abs(x)==x)*2-1)+roty)/FOV*800
+        outY = (math.acos(y/math.sqrt((y*y)+(z*z)))*(int(abs(y)==y)*2-1)+rotx)/FOV*600
+        #print(int(abs(y)==y ^ (abs(z) == z))*2-1)
+        return [outX, outY]
+def obdlznik(point1, point2, color):
+    draw_polygon((point1[0], point1[1]), (point1[0], point2[1]), (point2[0], point2[1]), (point2[0], point1[1]),  color=color)
+def showhitbox(id, color = (0,0,0,1)):
+    myentity = hitboxes.get(id)
+    obdlznik(myentity[0:2], [myentity[0] + myentity[2], myentity[1] + myentity[3]], color)
+def floor(num):
+    positive = num >= 0
+    if positive:
+        return math.floor(num)
+    else:
+        return math.floor(abs(num)) * -1
+def render_triangle(point1, point2, point3, color):
+    draw_polygon((point1[0], point1[1]), (point2[0], point2[1]), (point3[0], point3[1]),  color=color)
+class cube:
+    def __init__(self):
+        self.point_1 = [0,0,0]
+        self.point_2 = [0,0,0]
+        self.color = (0,0,50,1)
+    def render(self,camX, camY, camZ, rotx, roty):
+        #print(self.point_2)
+        point1 = countposonscreen([self.point_1[0],self.point_1[1],self.point_1[2]], camX, camY, camZ, rotx, roty)
+        point2 = countposonscreen([self.point_2[0],self.point_2[1],self.point_2[2]], camX, camY, camZ, rotx, roty)
+        point3 = countposonscreen([self.point_2[0],self.point_2[1],self.point_1[2]], camX, camY, camZ, rotx, roty)
+        point4 = countposonscreen([self.point_2[0],self.point_1[1],self.point_1[2]], camX, camY, camZ, rotx, roty)
+        point5 = countposonscreen([self.point_2[0],self.point_1[1],self.point_2[2]], camX, camY, camZ, rotx, roty)
+        point6 = countposonscreen([self.point_1[0],self.point_2[1],self.point_1[2]], camX, camY, camZ, rotx, roty)
+        point7 = countposonscreen([self.point_1[0],self.point_1[1],self.point_2[2]], camX, camY, camZ, rotx, roty)
+        point8 = countposonscreen([self.point_1[0],self.point_2[1],self.point_2[2]], camX, camY, camZ, rotx, roty)
+        draw_polygon(point1,point6,point3,point4,color=(0,0,50,1))
+        draw_polygon(point1,point6,point8,point7,color=(0,0,0,1))
+        draw_polygon(point2,point6,point8,point3,color=(0,50,50,1))
+        draw_polygon(point5,point7,point1,point4,color=(50,0,50,1))
+        draw_polygon(point5,point4,point3,point2,color=(0,50,0,1))
+        draw_polygon(point2,point8,point7,point5,color=(0,0,0,1))
